@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>netdev-watch — Linux network interface monitor</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #1e1e2e;  /* Catppuccin Mocha base */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    font-family: 'Fira Code', 'Cascadia Code', monospace;
+    padding: 40px;
+  }
+
+  .terminal {
+    background: #181825;  /* mantle */
+    border-radius: 12px;
+    padding: 24px 28px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    border: 1px solid #313244;  /* surface0 */
+    max-width: 1020px;
+    width: 100%;
+  }
+
+  .terminal-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #313244;
+  }
+
+  .terminal-dot { width: 14px; height: 14px; border-radius: 50%; }
+  .dot-red { background: #f38ba8; }
+  .dot-yellow { background: #f9e2af; }
+  .dot-green { background: #a6e3a1; }
+
+  .terminal-title {
+    color: #6c7086;
+    font-size: 14px;
+    margin-left: 8px;
+    letter-spacing: 0.3px;
+  }
+  .terminal-title span { color: #a6adc8; }
+
+  .output {
+    color: #cdd6f4;
+    font-size: 14px;
+    line-height: 1.75;
+    white-space: pre;
+  }
+  .output .cmd { color: #a6adc8; font-weight: 600; }
+  .output .cmd::before { content: "$ "; color: #a6e3a1; font-weight: 600; }
+
+  .output .banner { color: #89b4fa; font-weight: 600; }
+  .output .hdr { color: #6c7086; }
+  .output .name { color: #89dceb; }
+  .output .num { color: #a6e3a1; }
+  .output .pkt { color: #f5c2e7; }
+  .output .rate { color: #fab387; }
+  .output .load { color: #cba6f7; }
+  .output .dim { color: #585b70; }
+  .output .json-key { color: #89dceb; }
+  .output .json-str { color: #a6e3a1; }
+  .output .json-num { color: #f9e2af; }
+  .output .ok { color: #a6e3a1; font-weight: 600; }
+
+  .output .section { margin-top: 14px; }
+  .output .footer { color: #6c7086; }
+
+  .prompt {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #313244;
+  }
+  .prompt-symbol { color: #a6e3a1; font-size: 14px; font-weight: 600; }
+  .prompt-text { color: #6c7086; font-size: 13px; }
+</style>
+</head>
+<body>
+<div class="terminal">
+  <div class="terminal-header">
+    <div class="terminal-dot dot-red"></div>
+    <div class="terminal-dot dot-yellow"></div>
+    <div class="terminal-dot dot-green"></div>
+    <div class="terminal-title"><span>$</span> ./netdev-watch — Linux network interface monitor</div>
+  </div>
+
+  <div class="output"><span class="banner">netdev-watch — Linux network interface monitor (C++23)</span>
+
+<span class="cmd">./netdev-watch</span>
+  <span class="hdr">INTERFACE        RX    RX pkts  errs  drop        TX    TX pkts  errs  drop</span>
+  <span class="name">lo</span>              <span class="num">34.6M</span>      <span class="pkt">53,188</span>      <span class="num">0</span>      <span class="num">0</span>      <span class="num">34.6M</span>      <span class="pkt">53,188</span>      <span class="num">0</span>      <span class="num">0</span>
+  <span class="name">eth0</span>           <span class="num">386.3M</span>   <span class="pkt">1,515,100</span>      <span class="num">0</span>      <span class="num">0</span>     <span class="num">654.8M</span>     <span class="pkt">753,656</span>      <span class="num">0</span>      <span class="num">0</span>
+
+  <span class="load">load</span>   <span class="num">0.64</span>  <span class="num">0.30</span>  <span class="num">0.12</span>     <span class="dim">source /proc/net/dev</span>
+  <span class="load">uptime</span> <span class="num">21d 08:32:35</span>
+
+<span class="cmd">./netdev-watch --watch 2</span>
+  <span class="dim">refreshing every 2s — Ctrl+C to stop</span>
+  <span class="hdr">INTERFACE     RX rate    TX rate  RX pkt/s  TX pkt/s</span>
+  <span class="name">lo</span>              <span class="rate">0 B/s</span>      <span class="rate">0 B/s</span>       <span class="num">0.0</span>      <span class="num">0.0</span>
+  <span class="name">eth0</span>          <span class="rate">12.4 kB/s</span>   <span class="rate">38.2 kB/s</span>      <span class="num">8.5</span>     <span class="num">21.0</span>
+
+<span class="cmd">./netdev-watch --json</span>
+  <span class="dim">{</span>
+    <span class="dim">"interfaces": [</span>
+      {<span class="json-key">"name"</span>:<span class="json-str">"lo"</span>, <span class="json-key">"rx"</span>:{<span class="json-key">"bytes"</span>:<span class="json-num">34571588</span>,<span class="json-key">"packets"</span>:<span class="json-num">53188</span>,<span class="json-key">"errs"</span>:<span class="json-num">0</span>,<span class="json-key">"drop"</span>:<span class="json-num">0</span>}, <span class="json-key">"tx"</span>:{<span class="json-key">"bytes"</span>:<span class="json-num">34571588</span>,<span class="json-key">"packets"</span>:<span class="json-num">53188</span>,<span class="json-key">"errs"</span>:<span class="json-num">0</span>,<span class="json-key">"drop"</span>:<span class="json-num">0</span>}},
+      {<span class="json-key">"name"</span>:<span class="json-str">"eth0"</span>, <span class="json-key">"rx"</span>:{<span class="json-key">"bytes"</span>:<span class="json-num">386300000</span>,<span class="json-key">"packets"</span>:<span class="json-num">1515100</span>,<span class="json-key">"errs"</span>:<span class="json-num">0</span>,<span class="json-key">"drop"</span>:<span class="json-num">0</span>}, <span class="json-key">"tx"</span>:{<span class="json-key">"bytes"</span>:<span class="json-num">654800000</span>,<span class="json-key">"packets"</span>:<span class="json-num">753656</span>,<span class="json-key">"errs"</span>:<span class="json-num">0</span>,<span class="json-key">"drop"</span>:<span class="json-num">0</span>}}
+    <span class="dim">],</span>
+    <span class="dim">"uptime": {</span><span class="json-key">"seconds"</span>:<span class="json-num">1845045.74</span>,<span class="json-key">"idle_seconds"</span>:<span class="json-num">6133456.73</span><span class="dim">},</span>
+    <span class="dim">"loadavg": {</span><span class="json-key">"l1"</span>:<span class="json-num">0.64</span>,<span class="json-key">"l5"</span>:<span class="json-num">0.30</span>,<span class="json-key">"l15"</span>:<span class="json-num">0.12</span><span class="dim">}</span>
+  <span class="dim">}</span>
+
+<span class="cmd">./netdev-watch --selftest</span>
+  <span class="ok">35/35 selftests passed</span> <span class="dim">(parser /proc/net/dev / formatos / tasas / lectura real)</span>
+
+<span class="footer">/proc/net/dev · 16 contadores RX/TX por interfaz · errores/drops con umbral de color · exit codes 0/2 — ./netdev-watch --help</span></div>
+
+  <div class="prompt">
+    <div class="prompt-symbol">❯</div>
+    <div class="prompt-text">netdev-watch v1.0 — C++23, zero external dependencies</div>
+  </div>
+</div>
+</body>
+</html>
